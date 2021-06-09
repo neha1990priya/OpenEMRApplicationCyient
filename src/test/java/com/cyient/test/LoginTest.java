@@ -8,6 +8,7 @@ import org.testng.annotations.Test;
 import com.cyient.base.WebDriverWrapper;
 import com.cyient.page.DashboardPage;
 import com.cyient.page.LoginPage;
+import com.cyient.utilities.DataProviderUtils;
 
 public class LoginTest extends WebDriverWrapper {
 
@@ -25,18 +26,18 @@ public class LoginTest extends WebDriverWrapper {
 																			// resulted as failure
 	}
 
-	@Test
-	public void validCredentialTest() {
-
-		LoginPage login = new LoginPage(driver);
-		login.sendUsername("admin");
-		login.sendPassword("pass");
-		login.selectLanaguageByText("English (Indian)");
+	@Test(dataProvider ="validCredentialExcelData", dataProviderClass = DataProviderUtils.class)
+	public void validCredentialTest(String username, String password, String languageText, String expectedValue) {
+		
+		LoginPage login=new LoginPage(driver);
+		login.sendUsername(username);
+		login.sendPassword(password);
+		login.selectLanaguageByText(languageText);
 		login.clickOnLogin();
-
-		DashboardPage dashboard = new DashboardPage(driver);
+		
+		DashboardPage dashboard=new DashboardPage(driver);
 		String actualValue = dashboard.getDashboardPageTitle();
-		Assert.assertEquals(actualValue, "OpenEMR");
+		Assert.assertEquals(actualValue, expectedValue);
 	}
 
 	@Test
